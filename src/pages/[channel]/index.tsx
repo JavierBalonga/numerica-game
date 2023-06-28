@@ -88,12 +88,15 @@ export default function GamePage() {
   }, [channel]);
 
   return (
-    <div className="flex flex-col items-center justify-between gap-4 border-2 border-rose-400 p-8 rounded-xl min-h-[250px] min-w-[250px] bg-slate-900">
+    <div className="flex flex-col items-center justify-between gap-4 border-2 border-rose-400 p-8 rounded-xl h-full w-full max-h-[250px] max-w-[250px] bg-slate-900">
       <p className="text-xl font-bold">Max Score: {maxScore}</p>
       <p className="text-7xl sm:text-9xl font-bold">{state.number}</p>
       <p className="text-xl font-bold">
-        {state.status !== Status.GAME_OVER && `Blame on ${state.user}!`}
-        {state.status !== Status.STARTED && state.user}
+        {state.status === Status.GAME_OVER
+          ? `Blame on ${state.user}!`
+          : state.status === Status.STARTED
+          ? state.user
+          : ""}
       </p>
     </div>
   );
