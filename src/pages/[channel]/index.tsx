@@ -4,7 +4,7 @@ import tmi from "tmi.js";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-const TIME_TRESHOLD = 2000;
+const TIME_TRESHOLD = 10000;
 
 enum Status {
   IDLE = "IDLE",
@@ -73,7 +73,7 @@ export default function GamePage() {
         } else {
           registerNewScore(prev.number);
           return {
-            status: Status.GAME_OVER,
+            status: prev.number === 0 ? Status.IDLE : Status.GAME_OVER,
             number: 0,
             user: user,
             time: Date.now(),
@@ -92,9 +92,8 @@ export default function GamePage() {
       <p className="text-xl font-bold">Max Score: {maxScore}</p>
       <p className="text-7xl sm:text-9xl font-bold">{state.number}</p>
       <p className="text-xl font-bold">
-        {state.status !== Status.GAME_OVER
-          ? state.user
-          : `Blame on ${state.user}!`}
+        {state.status !== Status.GAME_OVER && `Blame on ${state.user}!`}
+        {state.status !== Status.STARTED && state.user}
       </p>
     </div>
   );
