@@ -9,8 +9,8 @@ export default function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/:channel" element={<GamePage />} />
+        <Route path="/numerica-game/" element={<HomePage />} />
+        <Route path="/numerica-game/:channel" element={<GamePage />} />
       </Route>
     </Routes>
   );
