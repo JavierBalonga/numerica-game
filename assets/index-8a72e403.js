@@ -1,0 +1,1 @@
+import{j as e,L as t}from"./index-bba32822.js";function o(){return e.jsxs(e.Fragment,{children:[e.jsx("h1",{className:"text-3xl font-bold underline",children:"HomePage"}),e.jsx("p",{className:"text-xl",children:"This page is under development."}),e.jsx(t,{to:"/rothiotome",children:"Go to Channel"})]})}export{o as default};
