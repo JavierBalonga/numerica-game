@@ -87,8 +87,6 @@ export default function GamePage() {
     };
   }, [channel]);
 
-  console.log(state);
-
   return (
     <div className="flex flex-col items-center justify-between gap-4 border-2 border-rose-400 p-8 rounded-xl min-h-[250px] min-w-[250px] bg-slate-900">
       <p className="text-xl font-bold">Max Score: {maxScore}</p>
