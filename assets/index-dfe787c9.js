@@ -1,1 +1,0 @@
-import{j as e}from"./index-5cc8df1e.js";function t(){return e.jsxs(e.Fragment,{children:[e.jsx("h1",{className:"text-3xl font-bold underline",children:"HomePage"}),e.jsx("p",{className:"text-xl",children:"This page is under development."})]})}export{t as default};
