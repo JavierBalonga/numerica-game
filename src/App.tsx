@@ -1,7 +1,8 @@
-import { lazy } from "react";
+import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
+import Layout from "./pages/layout";
+import Loading from "./pages/loading";
 
-const Layout = lazy(() => import("./pages/layout"));
 const HomePage = lazy(() => import("./pages"));
 const GamePage = lazy(() => import("./pages/[channel]"));
 
@@ -9,8 +10,22 @@ export default function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/:channel" element={<GamePage />} />
+        <Route
+          path="/"
+          element={
+            <Suspense fallback={<Loading />}>
+              <HomePage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/:channel"
+          element={
+            <Suspense fallback={<Loading />}>
+              <GamePage />
+            </Suspense>
+          }
+        />
       </Route>
     </Routes>
   );

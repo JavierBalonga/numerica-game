@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import tmi from "tmi.js";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-const TIME_TRESHOLD = 10000;
 
 enum Status {
   IDLE = "IDLE",
@@ -37,8 +35,33 @@ export default function GamePage() {
     status: Status.IDLE,
     number: 0,
     user: "",
-    time: 0,
   });
+
+  const handleNewMessage = useCallback((user: string, message: string) => {
+    const number = Number(message);
+    const isFiniteNumber = isFinite(number);
+    const isIntegerNumber = number % 1 === 0;
+    const isPositiveNumber = number > 0;
+    if (!isFiniteNumber || !isIntegerNumber || !isPositiveNumber) return;
+    setState((prev) => {
+      if (prev.user === user) return prev;
+      const isSuccess = number === prev.number + 1;
+      if (isSuccess) {
+        registerNewScore(number);
+        return {
+          status: Status.STARTED,
+          number: prev.number + 1,
+          user: user,
+        };
+      } else {
+        return {
+          status: prev.number === 0 ? Status.IDLE : Status.GAME_OVER,
+          number: 0,
+          user: user,
+        };
+      }
+    });
+  }, []);
 
   useEffect(() => {
     if (!channel) return;
@@ -52,34 +75,9 @@ export default function GamePage() {
 
     twitchClient.on("message", (_channel, tags, message, self) => {
       const { username, "display-name": displayName } = tags;
-
       const user = displayName || username;
-      const number = Number(message);
-      const time = Date.now();
-
-      const isValid = isFinite(number) && 0 < number;
-      if (self || !user || !isValid) return;
-
-      setState((prev) => {
-        if (prev.user === user && time < prev.time + TIME_TRESHOLD) return prev;
-        const isSuccess = number === prev.number + 1;
-        if (isSuccess) {
-          return {
-            status: Status.STARTED,
-            number: prev.number + 1,
-            user: user,
-            time: Date.now(),
-          };
-        } else {
-          registerNewScore(prev.number);
-          return {
-            status: prev.number === 0 ? Status.IDLE : Status.GAME_OVER,
-            number: 0,
-            user: user,
-            time: Date.now(),
-          };
-        }
-      });
+      if (self || !user) return;
+      handleNewMessage(user, message);
     });
 
     return () => {
@@ -88,7 +86,7 @@ export default function GamePage() {
   }, [channel]);
 
   return (
-    <div className="flex flex-col items-center justify-between gap-4 border-2 border-rose-400 p-8 rounded-xl h-full w-full max-h-[250px] max-w-[250px] bg-slate-900">
+    <div className="flex flex-col items-center justify-between gap-4 border-2 border-rose-400 p-8 rounded-xl h-full w-full grow max-h-[300px] max-w-[300px] bg-slate-900">
       <p className="text-xl font-bold">Max Score: {maxScore}</p>
       <p className="text-7xl sm:text-9xl font-bold">{state.number}</p>
       <p className="text-xl font-bold">
